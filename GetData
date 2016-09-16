@@ -1,0 +1,89 @@
+# coding: utf-8
+import urllib2
+from bs4 import BeautifulSoup
+import numpy as np
+import matplotlib.pyplot as plt
+
+#code = u"998407.o"
+code = u"9024.T"
+url = u"http://m.finance.yahoo.co.jp/stock/historicaldata?code=" +code
+#url = u"http://stocks.finance.yahoo.co.jp/stocks/detail/?code=" + code
+#http://m.finance.yahoo.co.jp/stock/historicaldata?code=9024.T&fy=2016&fm=5&fd=8&ty=2016&tm=6&td=8&cp=d
+
+html = urllib2.urlopen(url)
+soup = BeautifulSoup(html, "html")
+#print(soup)
+# 株価を取得
+# td class="stoksPrice"を検索
+
+dateIndex = 0
+elementIndex =0
+elementNumber = 7
+stockHistoryData = np.zeros([20,7])  #配列の宣言
+
+"""
+配列の説明
+0:日付	
+1:始値	
+2:高値
+3:安値
+4:終値	
+5:出来高
+6:調整後終値
+"""
+for price in soup.find_all("table",class_="tableFin"):
+		
+	elementclint = 0
+	for priceTable in price.find_all("td"):
+			#print(priceTable.string.replace("<td>",""))
+			#要素の整形
+			#★改善
+			fixedElement = int(priceTable.string.replace(",","").replace("/",""))
+			
+			print(fixedElement) #ここは出力される。
+			# elementclint +=1
+			
+			stockHistoryData[dateIndex,elementIndex] = fixedElement
+			
+			#print(stockHistoryData[dateIndex,elementIndex])
+			#ここは出ている。
+			
+			if elementIndex == 6: #
+				dateIndex +=1
+				elementIndex = 0
+			else:
+				elementIndex+=1
+averageDates=5
+getAverage = np.zeros(averageDates)		
+
+for i in range(0,averageDates):
+	print stockHistoryData[i,6]
+	getAverage[i] = stockHistoryData[i,6]
+
+print "Average is " 
+print np.mean(getAverage)
+
+#x = np.arange(1500,2500, 50)
+#plt.plot(x, getAverage)
+
+"""
+for i in getaverage:
+	plt.plot()
+"""	
+"""			
+	print stockHistoryData	[1,1]
+	print stockHistoryData.flags
+	print stockHistoryData.ndim
+	print stockHistoryData.size
+	print stockHistoryData.dtype		
+	print stockHistoryData
+	print(len(priceTable))
+	print "element are" + str(elementclint/7)
+			#stockHistoryData 
+			
+"""				
+		
+"""		result = str(price)
+		print(result)
+		print("Cannot find anything")
+"""
