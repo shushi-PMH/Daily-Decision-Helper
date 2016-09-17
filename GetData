@@ -18,8 +18,8 @@ soup = BeautifulSoup(html, "html")
 
 dateIndex = 0
 elementIndex =0
-elementNumber = 7
-stockHistoryData = np.zeros([20,7])  #配列の宣言
+elementNumber = 9
+stockHistoryData = np.zeros([20,elementNumber])  #配列の宣言
 
 """
 配列の説明
@@ -31,31 +31,38 @@ stockHistoryData = np.zeros([20,7])  #配列の宣言
 5:出来高
 6:調整後終値
 """
-for price in soup.find_all("table",class_="tableFin"):
-		
-	elementclint = 0
+for price in soup.find_all("table",class_="tableFin"):		#elementclint = 0
 	for priceTable in price.find_all("td"):
 			#print(priceTable.string.replace("<td>",""))
 			#要素の整形
 			#★改善
-			fixedElement = int(priceTable.string.replace(",","").replace("/",""))
 			
-			print(fixedElement) #ここは出力される。
-			# elementclint +=1
+			#日付をスライスで三つに分割する
+			if elementIndex < 3:
+				print(priceTable.string.split("/"))
+				for i in priceTable.string.split("/"):
+					print(i)
+					stockHistoryData[dateIndex,elementIndex] = i
+					elementIndex +=1
+			else:
+				fixedElement = int(priceTable.string.replace(",",""))	
+				print(fixedElement) #ここは出力される。
+				# elementclint +=1
 			
-			stockHistoryData[dateIndex,elementIndex] = fixedElement
+				stockHistoryData[dateIndex,elementIndex] = fixedElement
 			
-			#print(stockHistoryData[dateIndex,elementIndex])
+			print(stockHistoryData[dateIndex,elementIndex])
 			#ここは出ている。
 			
-			if elementIndex == 6: #
+			if elementIndex == 8: #
 				dateIndex +=1
 				elementIndex = 0
 			else:
 				elementIndex+=1
+				
 averageDates=5
 getAverage = np.zeros(averageDates)		
-
+"""
 for i in range(0,averageDates):
 	print stockHistoryData[i,6]
 	getAverage[i] = stockHistoryData[i,6]
@@ -65,7 +72,7 @@ print np.mean(getAverage)
 
 #x = np.arange(1500,2500, 50)
 #plt.plot(x, getAverage)
-
+"""
 """
 for i in getaverage:
 	plt.plot()
